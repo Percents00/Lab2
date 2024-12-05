@@ -24,6 +24,21 @@ public:
     friend std::istream& operator>>(std::istream& is, Student& student);
     friend std::ostream& operator<<(std::ostream& os, const Student& student);
 
+    bool operator==(const Student& other) const {
+        return firstName == other.firstName &&
+               lastName == other.lastName &&
+               birthYear == other.birthYear &&
+               id == other.id;
+    }
+
+    bool operator<(const Student& other) const {
+        return birthYear < other.birthYear;
+    }
+
+    bool operator>(const Student& other) const {
+        return birthYear > other.birthYear;
+    }
+
 
 };
 

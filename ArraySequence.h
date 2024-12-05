@@ -12,7 +12,7 @@ private:
 public:
   ArraySequence() : array_(new DynamicArray<T>(0)) {}
   ArraySequence(const SharedPtr<DynamicArray<T>>& arr) : array_(arr) {}
-  ArraySequence(T* items, int count) : array_(new DynamicArray<T>(items, count)) {}
+    ArraySequence(const T* items, int count) : array_(new DynamicArray<T>(items, count)) {}
   ArraySequence(const ArraySequence<T>& other) : array_(new DynamicArray<T>(*other.array_)) {}
 
 

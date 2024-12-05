@@ -11,7 +11,7 @@ private:
 public:
     DynamicArray(int size) : size(size), items(new T[size]) {}
 
-    DynamicArray(T* items, int count) : size(count), items(new T[count]) {
+    DynamicArray(const T* items, int count) : size(count), items(new T[count]) {
         for (int i = 0; i < count; ++i) {
             this->items[i] = items[i];
         }
