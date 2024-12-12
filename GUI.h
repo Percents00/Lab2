@@ -28,6 +28,14 @@ class GUI : public QWidget {
     Q_OBJECT
 
 private:
+
+    std::map<QString, std::function<bool(const Student&, const Student&)>> comparators = {
+        {"By First Name", CompareStudentsByFirstName{}},
+        {"By Last Name", CompareStudentsByLastName{}},
+        {"By Birth Year", CompareStudentsByBirthYear{}},
+        {"By ID", CompareStudentsById{}}
+    };
+
     std::vector<std::string> firstNames;
     std::vector<std::string> lastNames;
     std::random_device rd;
@@ -52,7 +60,7 @@ private:
     Student generateRandomStudent() {
         if (firstNames.empty() || lastNames.empty()) {
             std::cerr << "Error: First or last names not loaded." << std::endl;
-            return Student{};
+            return Student{};  // Return a default Student object
         }
 
 
@@ -106,7 +114,7 @@ private:
 
 
         auto start = std::chrono::high_resolution_clock::now();
-        sorters.at(sorterName)->Sort(students, comp);
+        sorters.at(sorterName)->Sort(students, comp);  // Sort in-place
         auto end = std::chrono::high_resolution_clock::now();
 
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -129,7 +137,7 @@ private:
         }
 
 
-        std::vector<std::pair<std::string, long long>> timings;
+        std::vector<std::pair<std::string, long long>> timings;  // Store sorter names and times
         std::vector<std::string> sortersToCompare = {"Bubble Sort", "Quick Sort", "Heap Sort"};
 
         std::stringstream finalOutput;
@@ -219,7 +227,7 @@ public:
         mainLayout->addWidget(sortButton);
 
 
-        connect(sortButton, &QPushButton::clicked, this, &GUI::sortStudents);
+        connect(sortButton, &QPushButton::clicked, this, &GUI::sortStudents);  // No change here
 
 
         outputTextEdit = new QTextEdit();
@@ -270,7 +278,6 @@ public:
 public slots:
 
     void compareSorts() {
-
         QString selectedComparator = comparatorComboBox->currentText();
 
         if (!students || students->GetLength() == 0) {
@@ -278,24 +285,13 @@ public slots:
             return;
         }
 
-
-        std::function<bool(const Student&, const Student&)> comparator;
-        if (selectedComparator == "By First Name") {
-            comparator = CompareStudentsByFirstName{};
-        } else if (selectedComparator == "By Last Name") {
-            comparator = CompareStudentsByLastName{};
-        } else if (selectedComparator == "By Birth Year") {
-            comparator = CompareStudentsByBirthYear{};
-        } else if (selectedComparator == "By ID") {
-            comparator = CompareStudentsById{};
-        } else {
+        auto comparatorIter = comparators.find(selectedComparator);
+        if (comparatorIter == comparators.end()) {
             outputTextEdit->setPlainText("Error: Invalid comparator selected.");
             return;
         }
 
-
-        runComparisons(comparator);
-
+        runComparisons(comparatorIter->second);
     }
 
     void generateStudents(int numStudents) {
@@ -348,27 +344,18 @@ public slots:
     }
 
     void sortStudents() {
-
-
         QString selectedSorter = sorterComboBox->currentText();
         QString selectedComparator = comparatorComboBox->currentText();
+
 
         if (!students || students->GetLength() == 0) {
             outputTextEdit->setPlainText("Error: No data loaded.");
             return;
         }
 
-        std::function<bool(const Student&, const Student&)> comparator;
 
-        if (selectedComparator == "By First Name") {
-            comparator = CompareStudentsByFirstName{};
-        } else if (selectedComparator == "By Last Name") {
-            comparator = CompareStudentsByLastName{};
-        } else if (selectedComparator == "By Birth Year") {
-            comparator = CompareStudentsByBirthYear{};
-        } else if (selectedComparator == "By ID") {
-            comparator = CompareStudentsById{};
-        } else {
+        auto comparatorIter = comparators.find(selectedComparator);
+        if (comparatorIter == comparators.end()) {
             outputTextEdit->setPlainText("Error: Invalid comparator selected.");
             return;
         }
@@ -377,14 +364,16 @@ public slots:
 
         try {
             if (selectedSorter == "All") {
-                runComparisons(comparator);
+                runComparisons(comparatorIter->second);
             } else {
-                sortAndDisplay(comparator, selectedSorter.toStdString());
+                sortAndDisplay(comparatorIter->second, selectedSorter.toStdString());
+
             }
         }  catch (const std::out_of_range& e) {
             outputTextEdit->setPlainText(QString("Error: Sorter '%1' not found.").arg(selectedSorter));
             std::cerr << "Error: " << e.what() << std::endl;
         }
+
 
     }
 
