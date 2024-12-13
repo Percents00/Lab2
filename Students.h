@@ -31,6 +31,14 @@ public:
                id == other.id;
     }
 
+    bool operator<(const Student& other) const {
+        return birthYear < other.birthYear;
+    }
+
+    bool operator>(const Student& other) const {
+        return birthYear > other.birthYear;
+    }
+
 };
 
 struct CompareStudentsById {
