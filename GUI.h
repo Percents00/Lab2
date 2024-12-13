@@ -60,7 +60,7 @@ private:
     Student generateRandomStudent() {
         if (firstNames.empty() || lastNames.empty()) {
             std::cerr << "Error: First or last names not loaded." << std::endl;
-            return Student{};  // Return a default Student object
+            return Student{};
         }
 
 
@@ -114,7 +114,7 @@ private:
 
 
         auto start = std::chrono::high_resolution_clock::now();
-        sorters.at(sorterName)->Sort(students, comp);  // Sort in-place
+        sorters.at(sorterName)->Sort(students, comp);
         auto end = std::chrono::high_resolution_clock::now();
 
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -137,7 +137,7 @@ private:
         }
 
 
-        std::vector<std::pair<std::string, long long>> timings;  // Store sorter names and times
+        std::vector<std::pair<std::string, long long>> timings;
         std::vector<std::string> sortersToCompare = {"Bubble Sort", "Quick Sort", "Heap Sort"};
 
         std::stringstream finalOutput;
@@ -227,7 +227,7 @@ public:
         mainLayout->addWidget(sortButton);
 
 
-        connect(sortButton, &QPushButton::clicked, this, &GUI::sortStudents);  // No change here
+        connect(sortButton, &QPushButton::clicked, this, &GUI::sortStudents);
 
 
         outputTextEdit = new QTextEdit();
